@@ -29,70 +29,7 @@ This stack includes:
 
 ## 🐳 Quickstart
 
-Create `docker-compose.yml` at your project root:
-
-```yaml
-version: "3.9"
-
-services:
-  db:
-    image: postgres:16
-    platform: linux/arm64/v8
-    container_name: mb-ee-db
-    environment:
-      POSTGRES_USER: metabase
-      POSTGRES_PASSWORD: metabase
-      POSTGRES_DB: metabase
-    ports:
-      - "5433:5432"
-    volumes:
-      - dbdata:/var/lib/postgresql/data
-
-  ldap:
-    image: bitnami/openldap:2.6
-    environment:
-      LDAP_ADMIN_USERNAME: admin
-      LDAP_ADMIN_PASSWORD: adminpass
-      LDAP_ROOT: dc=example,dc=org
-      LDAP_PORT_NUMBER: "389"   # internal LDAP port
-    ports:
-      - "1389:389"
-
-  phpldapadmin:
-    image: osixia/phpldapadmin:0.9.0
-    depends_on:
-      - ldap
-    ports:
-      - "8081:443"               # open https://localhost:8081
-    environment:
-      PHPLDAPADMIN_HTTPS: "true"
-      # Ensure phpLDAPadmin talks to ldap:389 without TLS (matches our dev LDAP):
-      PHPLDAPADMIN_LDAP_HOSTS: >-
-        #PYTHON2BASH:[{"ldap":{"server":[{"port":389},{"tls":false}]}}]
-
-  metabase:
-    image: metabase/metabase-enterprise:v1.56.4.x  # pick an existing .x tag
-    platform: linux/arm64/v8
-    container_name: metabase-ee
-    depends_on:
-      - db
-    ports:
-      - "3001:3000"
-    environment:
-      MB_DB_TYPE: postgres
-      MB_DB_DBNAME: metabase
-      MB_DB_PORT: 5432
-      MB_DB_USER: metabase
-      MB_DB_PASS: metabase
-      MB_DB_HOST: db
-      MB_SITE_URL: http://localhost:3001
-      MB_ENCRYPTION_SECRET_KEY: "replace-with-32+char-secret"
-
-volumes:
-  dbdata:
-```
-
-Then start everything:
+Start everything:
 
 ```bash
 docker compose up -d
