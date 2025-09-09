@@ -1,4 +1,4 @@
-# Metabase + OpenLDAP (Dev Stack)
+# Metabase + ldap
 
 Spin up a tiny lab to test **LDAP sign-in + just-in-time (JIT) user provisioning** in Metabase.
 
